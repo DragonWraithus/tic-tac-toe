@@ -1,0 +1,25 @@
+.content {
+    display: grid;
+    justify-items: center;
+
+}
+
+.game-body {
+    border: solid white 1px;
+    background: black;
+}
+
+#mid-row {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.tic-tac {
+    width: 4rem;
+    height: 4rem;
+    background: white;
+    border: none;
+    margin: 1px;
+    vertical-align: top;
+}
+
