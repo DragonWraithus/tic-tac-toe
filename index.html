@@ -7,7 +7,23 @@
 </head>
 <body>
     <div class='content'>
-        <h1>Play a Game!</h1>
+        <div class='player' id='first-player'>
+            <input type='button' value='Set Player1' class='p1' id='set-p1'></input>
+            <label for='p1-name'>Name: </label>
+            <input type='text' class='p1' id='p1-name'></input>
+            
+            <label for='p1-mark'>Mark: </label>
+            <select id='p1-mark'>
+                <option value='X'>X</option>
+                <option value='&#x1F982'>&#x1F982</option>
+            </select>
+            
+            <p class='p1' id='p1-score'>Score: 0</p>
+        </div>
+        <div class='game-display'>
+            <h1>Play a Game!</h1>
+            <h2 class='hide players-turn'>[Name]'s turn.</h2>
+        </div>
 
         <div class="game-body">
             <div class='row' id='top-row'>
@@ -26,8 +42,23 @@
                 <button class='tic-tac' id='box-8'></button>
             </div>
         </div>
+        <div class='player' id='second-player'>
+            <input type='button' value='Set Player2' class='p2' id='set-p2'></input>
+            <label for='p2-name'>Name: </label>
+            <input type='text' class='p2' id='p2-name'></input>
+            
+            <label for='p2-name'>Mark: </label>
+            <select id='p2-mark'>
+                <option value='O'>O</option>
+                <option value='&#x1F981'>&#x1F981</option>
+            </select>
+            
+            <!-- Replace with popuplist. !-->
+            <!-- <input type='text' class='p2' id='p2-mark'></p> -->
+            <p class='p2' id='p2-score'>Score: 0</p>
+        </div>
     </div>
                 
-    <script src='scripts/script.js'></script>
+    <script src='scripts/game.js'></script>
 </body>
 </html>
