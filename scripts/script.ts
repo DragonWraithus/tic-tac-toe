@@ -5,23 +5,35 @@ const page = {
 
 /* Model */
 
+const Player = (_name: string, _mark: string) => {
+    let _score = 0;
+    const get = (() => {
+        const name = () => _name;
+        const mark = () => _mark;
+        const score = () => _score;
+        return {name, mark, score};
+    })();
+
+    const won = () => {
+        _score += 1;
+    }
+
+    return {get, won};
+}
+
 let playerMark: string = 'X';
 
 let board = (() => {
     const _SIDE_LENGTH = 3;
     const _MAX_MOVES = 9;
     let _movesMade = 0;
+    let gameWon = false;
 
     let _board = [
         ['','',''], 
         ['','',''], 
         ['','','']
     ];
-    let _state = {
-        empty: '',
-        x: 'X',
-        o: 'O'
-    };
 
     const _numberToPosition = (index: number) => {
         return {
@@ -93,7 +105,7 @@ let board = (() => {
     };
 
     const changeTile = (index: number, playerChoice: string) => {
-        if (_movesMade >= _MAX_MOVES) {
+        if (_movesMade >= _MAX_MOVES || gameWon) {
             page.header.textContent = "The Game is Over!"
             return '-';
         }
@@ -106,6 +118,7 @@ let board = (() => {
         
         // TODO
         if (_victoryCheck()) {
+            gameWon = true;
             page.header.textContent = `${playerMark} is The Winner!`;
         }
         
@@ -125,6 +138,8 @@ const tileUsed = (button: any, mark: string) => {
 
 /* Controller */
 
+let player1 = Player('Player1', 'X');
+
 // Each button is clickable once.
 page.tiles.forEach((tile, index) => {
     const makeMove = (e: Event | any) => {
@@ -135,3 +150,4 @@ page.tiles.forEach((tile, index) => {
     };
     tile.addEventListener('click', makeMove);
 });
+

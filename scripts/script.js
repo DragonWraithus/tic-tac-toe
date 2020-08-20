@@ -4,21 +4,30 @@ const page = {
     header: document.querySelector('h1'),
 };
 /* Model */
+const Player = (_name, _mark) => {
+    let _score = 0;
+    const get = (() => {
+        const name = () => _name;
+        const mark = () => _mark;
+        const score = () => _score;
+        return { name, mark, score };
+    })();
+    const won = () => {
+        _score += 1;
+    };
+    return { get, won };
+};
 let playerMark = 'X';
 let board = (() => {
     const _SIDE_LENGTH = 3;
     const _MAX_MOVES = 9;
     let _movesMade = 0;
+    let gameWon = false;
     let _board = [
         ['', '', ''],
         ['', '', ''],
         ['', '', '']
     ];
-    let _state = {
-        empty: '',
-        x: 'X',
-        o: 'O'
-    };
     const _numberToPosition = (index) => {
         return {
             row: Math.floor(index / _SIDE_LENGTH),
@@ -73,7 +82,7 @@ let board = (() => {
             _diagVictory());
     };
     const changeTile = (index, playerChoice) => {
-        if (_movesMade >= _MAX_MOVES) {
+        if (_movesMade >= _MAX_MOVES || gameWon) {
             page.header.textContent = "The Game is Over!";
             return '-';
         }
@@ -83,6 +92,7 @@ let board = (() => {
         _setState(row, col, playerMark);
         // TODO
         if (_victoryCheck()) {
+            gameWon = true;
             page.header.textContent = `${playerMark} is The Winner!`;
         }
         return playerMark;
@@ -95,6 +105,7 @@ const tileUsed = (button, mark) => {
     button.textContent = mark;
 };
 /* Controller */
+let player1 = Player('Player1', 'X');
 // Each button is clickable once.
 page.tiles.forEach((tile, index) => {
     const makeMove = (e) => {
