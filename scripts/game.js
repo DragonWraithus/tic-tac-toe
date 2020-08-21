@@ -3,6 +3,7 @@ const page = {
     tiles: document.querySelectorAll('.tic-tac'),
     display: {
         header: document.querySelector('h1'),
+        startBtn: document.querySelector('#start-game'),
         turn: document.querySelector('.players-turn'),
     },
     player: {
@@ -51,7 +52,10 @@ let board = (() => {
         const tile = (row, col, player) => {
             _board[row][col] = player.get.mark();
         };
-        return { tile };
+        const empty = () => {
+            _board = [['', '', ''], ['', '', ''], ['', '', '']];
+        };
+        return { tile, empty };
     })();
     return { get, set };
 })();
@@ -60,9 +64,19 @@ const squarePlayed = (button, mark) => {
     button.disable = true;
     button.textContent = mark;
 };
-// BUGS: 
-// Player1's name is always the winner.
-// Player2's mark is the only one played.
+const cleanTiles = () => {
+    page.tiles.forEach(t => {
+        t.disabled = false;
+        t.textContent = '';
+    });
+};
+/*const cleanTiles = () => {
+    page.tiles.forEach((tile: any) => {
+        tile.textContent = '';
+        tile.disabled = false;
+    });
+}*/
+// BUG: Displayed Score Doesn't reset to zero when player changed.
 const setPlayer = (e) => {
     if (e.target.className == 'p1') {
         let player1 = Player(page.player.one.name.value, page.player.one.mark.value);
@@ -76,7 +90,6 @@ const setPlayer = (e) => {
 /* Controller */
 // TODO:
 // Switch first players.
-// Make emojis work.
 // Start/Reset Game.
 // Block player change before new game.
 // AI Min-max.
@@ -87,10 +100,16 @@ let displayController = (() => {
     };
     const _MAX_MOVES = 9;
     let _movesMade = 0;
-    let gameWon = false;
+    let _gameStarted = false;
+    let _gameWon = false;
     const set = (() => {
         const player = (person, first) => {
-            _players[first ? 'x' : 'o'] = person;
+            if (!_gameStarted) {
+                _players[first ? 'x' : 'o'] = person;
+            }
+            else {
+                page.display.header.textContent = 'Please restart to change players.';
+            }
         };
         return { player };
     })();
@@ -149,26 +168,41 @@ let displayController = (() => {
             _diagVictory(board));
     };
     const changeTile = (index) => {
-        if (_movesMade >= _MAX_MOVES || gameWon) {
+        _gameStarted = true;
+        if (_movesMade >= _MAX_MOVES || _gameWon) {
+            console.debug(_movesMade, _gameWon);
             return '-';
         }
         _movesMade += 1;
         let { row, col } = _numberToPosition(index);
         let player = _players[_movesMade % 2 ? 'o' : 'x'];
         board.set.tile(row, col, player);
-        // TODO
         if (_victoryCheck(board.get.board())) {
-            gameWon = true;
+            _gameWon = true;
             page.display.header.textContent = "Game Over";
             page.display.turn.textContent = `${player.get.name()} is The Winner!`;
+            player.won();
+            page.player[_movesMade % 2 ? 'two' : 'one']
+                .score
+                .textContent =
+                `Score: ${player.get.score()}`;
+            // BUG: Toggles off after displaying previous winner.
             page.display.turn.classList.toggle('hide');
         }
-        if (_movesMade == _MAX_MOVES && !gameWon) {
+        if (_movesMade == _MAX_MOVES && !_gameWon) {
             page.display.header.textContent = "Cat's Eye!";
         }
         return player.get.mark();
     };
-    return { set, changeTile };
+    const newGame = () => {
+        page.display.header.textContent = 'New Game!';
+        board.set.empty();
+        cleanTiles();
+        _movesMade = 0;
+        _gameStarted = false;
+        _gameWon = false;
+    };
+    return { set, changeTile, newGame };
 })();
 displayController.set.player(Player('Todd', 'TE'), true);
 displayController.set.player(Player('Mark', 'O'), false);
@@ -177,9 +211,13 @@ page.tiles.forEach((tile, index) => {
     const makeMove = (e) => {
         playerMark = displayController.changeTile(index);
         squarePlayed(e.target, playerMark);
-        e.target.removeEventListener('click', makeMove);
+        tile.disabled = true;
+        // e.target!.removeEventListener('click', makeMove);
     };
     tile.addEventListener('click', makeMove);
+});
+page.display.startBtn.addEventListener('click', () => {
+    displayController.newGame();
 });
 page.player.one.set.addEventListener('click', setPlayer);
 page.player.two.set.addEventListener('click', setPlayer);
