@@ -7,11 +7,12 @@
     justify-items: center;
     
     grid-template-columns: 30% 30% 30%;
+    grid-template-rows: 30% 30% 30%;
 }
 
 .player {
     display: grid;
-    
+    grid-row: span 2;
 }
 
 .player select {
@@ -20,15 +21,29 @@
 
 .game-display {
     display: grid;
+    grid-template-rows: 30% 30% 30%;
     justify-self: center;
     justify-items: center;
     color: red;
 }
 
+.game-display h1 {
+    grid-row: 1;
+}
+#start-game {
+    align-self: center;
+    grid-row 2;
+}
+.game-display h2 {
+    grid-row: 3;
+}
+
+
 .game-body {
+    height : 12.85rem;
     justify-self: center;
-    grid-row: 2;
-    grid-column: 2;
+    align-self: center;
+    grid-area: 2 / 2 / 3 / 2;
     background: black;
     box-shadow: inset 0 0 0 1px white;
 }
