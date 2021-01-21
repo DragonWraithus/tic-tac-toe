@@ -1,3 +1,14 @@
+/* BUGS:
+ * New Game/Restart requires double click before accepting Set Player.
+ * Mark: not changed with Set Player.
+ * AI chooses cat's eye over victory. 
+ * Displayed Score doesn't reset to zero when player changed.
+ */
+
+ /* Features:
+  * Make AI a player instead of a Button. 
+  */
+
 const page = {
     tiles: <NodeListOf<HTMLInputElement>>document.querySelectorAll('.tic-tac')!,
     display: {

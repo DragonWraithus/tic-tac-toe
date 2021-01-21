@@ -1,4 +1,13 @@
 "use strict";
+/* BUGS:
+ * New Game/Restart requires double click before accepting Set Player.
+ * Mark: not changed with Set Player.
+ * AI chooses cat's eye over victory.
+ * Displayed Score doesn't reset to zero when player changed.
+ */
+/* Features:
+ * Make AI a player instead of a Button.
+ */
 const page = {
     tiles: document.querySelectorAll('.tic-tac'),
     display: {
@@ -132,6 +141,7 @@ let board = (() => {
             });
             return movesLeft;
         };
+        // Prefers blocking to winning. 
         const best = () => {
             let _moves = _unmadeMoves();
             if (_moves.length == 0) {
@@ -139,10 +149,7 @@ let board = (() => {
             }
             let _player = displayController.get.player('current');
             let _nextPlayer = displayController.get.player('next');
-            // BUG: Returns inner function, instead of 'best'.
             // iterate own victoryCheck if victory, return move.
-            _moves.forEach((tileIdx) => {
-            });
             for (let tileIdx of _moves) {
                 let { row, col } = indexToCoord(tileIdx);
                 _board[row][col] = _player.get.mark();
